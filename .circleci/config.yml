@@ -1,0 +1,134 @@
+version: 2.1
+jobs:
+  lint:
+    docker:
+      -
+        image: circleci/golang:1.14
+    working_directory: /go/src/github.com/ory/k8s
+    steps:
+      - checkout
+      -
+        run: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      -
+        run: helm lint ./helm/charts/oathkeeper/
+      -
+        run: helm lint ./helm/charts/oathkeeper-maester/
+      -
+        run: helm lint ./helm/charts/hydra/
+      -
+        run: helm lint ./helm/charts/hydra-maester/
+      -
+        run: helm lint ./helm/charts/kratos/
+      -
+        run: helm lint ./helm/charts/example-idp/
+      -
+        run: helm lint ./helm/charts/kratos-selfservice-ui-node/
+
+  test:
+    machine:
+      image: ubuntu-1604:201903-01
+      # docker_layer_caching: true
+    steps:
+      - checkout
+      -
+        run:
+          name: "Install kind & kubectl"
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+            curl -Lo ./kind https://github.com/kubernetes-sigs/kind/releases/download/v0.7.0/kind-$(uname)-amd64
+            chmod +x ./kubectl
+            chmod +x ./kind
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            sudo mv ./kind /usr/local/bin/kind
+      -
+        run:
+          name: "Create cluster"
+          command: |
+            kind create cluster --wait 2m
+      -
+        run:
+          name: "Install Helm"
+          command: |
+            curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      -
+        run:
+          command: |
+            .circleci/helm-test.sh oathkeeper
+      -
+        run:
+          command: |
+            .circleci/helm-test.sh hydra
+      -
+        run:
+          command: |
+            .circleci/helm-test.sh hydra-maester
+      -
+        run:
+          command: |
+            .circleci/helm-test.sh kratos
+
+  release:
+    docker:
+      -
+        image: circleci/golang:1.14
+    working_directory: /go/src/github.com/ory/k8s
+    steps:
+      - checkout
+      -
+        run: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      -
+        run: helm dep update ./helm/charts/oathkeeper/
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/oathkeeper/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/oathkeeper-maester/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm dep update ./helm/charts/hydra/
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/hydra/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/hydra-maester/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/example-idp/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/kratos/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm package -d docs/helm/charts/ ./helm/charts/kratos-selfservice-ui-node/ --version `echo $CIRCLE_TAG | sed s/v//g`
+      -
+        run: helm repo index docs/helm/charts/
+      -
+        run: git config --global user.email "aeneas@ory.sh"
+      -
+        run: git config --global user.name "aeneasr"
+      -
+        run: git checkout -b make-release HEAD
+      -
+        run: git add -A
+      -
+        run: git commit -a -m "Release $CIRCLE_TAG"
+      -
+        run: git push origin HEAD:master
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      -
+        test:
+          filters:
+            tags:
+              only: /.*/
+      -
+        lint:
+          filters:
+            tags:
+              only: /.*/
+      -
+        release:
+          requires:
+            - lint
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
