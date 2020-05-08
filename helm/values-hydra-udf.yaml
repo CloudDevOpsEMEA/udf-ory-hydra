@@ -1,7 +1,7 @@
 hydra:
     config:
         secrets:
-            system: secret
+            system: bGNxYlU2NHRKbkl0WG9DbWtFYkpVTWJS
         dsn: memory
         urls:
             self:
