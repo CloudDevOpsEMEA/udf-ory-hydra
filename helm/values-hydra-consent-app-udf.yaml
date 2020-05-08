@@ -1,8 +1,5 @@
 hydra:
-    admin:
-        url: http://hydra-admin:4445
-    public:
-        url: http://hydra-public
+    url: http://hydra-admin:4445
 ingress:
     enabled: true
 nodePort:

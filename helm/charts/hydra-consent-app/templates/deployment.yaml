@@ -25,10 +25,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: HYDRA_ADMIN_URL
-              value: {{ .Values.hydra.admin.url }}
-            - name: HYDRA_PUBLIC_URL
-              value: {{ .Values.hydra.public.url }}
+            - name: HYDRA_URL
+              value: {{ .Values.hydra.url }}
           ports:
             - name: http
               containerPort: 3000
