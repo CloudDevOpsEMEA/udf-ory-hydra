@@ -1,14 +1,15 @@
-config:
-    secrets:
-        system: secret
-    dsn: memory
-    urls:
-        self:
-            issuer: http://hydra-public
-        login: http://localhost:30005/login
-        consent: http://localhost:30005/consent
-        logout: http://localhost:30005/logout
-dangerousForceHttp: true
+hydra:
+    config:
+        secrets:
+            system: secret
+        dsn: memory
+        urls:
+            self:
+                issuer: http://hydra-public
+            login: http://localhost:30005/login
+            consent: http://localhost:30005/consent
+            logout: http://localhost:30005/logout
+    dangerousForceHttp: true
 ingress:
     public:
         enabled: true
