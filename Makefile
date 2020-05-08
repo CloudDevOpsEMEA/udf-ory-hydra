@@ -29,6 +29,6 @@ helm_upgrade_hydra: ## Upgrade hydra
 	helm upgrade hydra ${HELM_HYDRA} --namespace ${HYDRA_NAMESPACE} --values ${HYDRA_LOCAL_VALUES}
 
 helm_remove_hydra: ## Remove hydra
-	helm uninstall aspenmesh --namespace ${HYDRA_NAMESPACE}
-	helm uninstall istio-init --namespace ${HYDRA_NAMESPACE}
+	helm uninstall hydra-consent-app --namespace ${HYDRA_NAMESPACE}
+	helm uninstall hydra --namespace ${HYDRA_NAMESPACE}
 	kubectl delete -f ${HYDRA_NAMESPACE_SPEC}
