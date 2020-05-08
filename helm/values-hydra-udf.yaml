@@ -4,10 +4,10 @@ config:
     dsn: memory
     urls:
         self:
-            issuer: http://public.hydra.localhost
-        login: http://example-idp.localhost/login
-        consent: http://example-idp.localhost/consent
-        logout: http://example-idp.localhost/logout
+            issuer: http://hydra-public
+        login: http://localhost:30005/login
+        consent: http://localhost:30005/consent
+        logout: http://localhost:30005/logout
 dangerousForceHttp: true
 ingress:
     public:

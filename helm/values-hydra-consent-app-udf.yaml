@@ -1,7 +1,10 @@
 hydra:
     admin:
-        url: http://hydra-example-admin:4445
+        url: http://hydra-admin:4445
     public:
-        url: http://public.hydra.localhost 
+        url: http://hydra-public
 ingress:
     enabled: true
+nodePort:
+    enabled: true
+    port: 30005
