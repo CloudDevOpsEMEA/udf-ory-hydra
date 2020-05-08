@@ -5,3 +5,5 @@ ingress:
 nodePort:
     enabled: true
     port: 30005
+image:
+    pullPolicy: Always
