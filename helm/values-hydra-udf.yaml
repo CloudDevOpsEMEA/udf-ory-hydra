@@ -9,7 +9,7 @@ hydra:
             login: http://localhost:30005/login
             consent: http://localhost:30005/consent
             logout: http://localhost:30005/logout
-dangerousForceHttp: true
+    dangerousForceHttp: true
 ingress:
     public:
         enabled: true
