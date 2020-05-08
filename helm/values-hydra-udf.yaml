@@ -1,0 +1,16 @@
+config:
+    secrets:
+        system: secret
+    dsn: memory
+    urls:
+        self:
+            issuer: http://public.hydra.localhost
+        login: http://example-idp.localhost/login
+        consent: http://example-idp.localhost/consent
+        logout: http://example-idp.localhost/logout
+dangerousForceHttp: true
+ingress:
+    public:
+        enabled: true
+    admin:
+        enabled: true

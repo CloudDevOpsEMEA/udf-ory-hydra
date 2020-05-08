@@ -1,0 +1,7 @@
+hydra:
+    admin:
+        url: http://hydra-example-admin:4445
+    public:
+        url: http://public.hydra.localhost 
+ingress:
+    enabled: true
