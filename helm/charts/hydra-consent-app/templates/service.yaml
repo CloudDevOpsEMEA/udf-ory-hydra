@@ -36,7 +36,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-      targetPort: {{ .Values.nodePort.port }}
+      nodePort: {{ .Values.nodePort.port }}
   selector:
     app.kubernetes.io/name: {{ include "hydra-consent-app.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
